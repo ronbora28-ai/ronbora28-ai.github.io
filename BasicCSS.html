@@ -3,7 +3,94 @@
 <html lang="en">
 	<head>
 		<title>CSS Examples</title>
-		<link rel="stylesheet" href="5_css1.css">
+		<style>
+			/* General Body Styling */
+			body {
+				background-color: #a8d5d5;
+				font-family: Arial, sans-serif;
+			}
+
+			/* Header 1 - Top header alignment */
+			h1 {
+				text-align: center;
+				font-size: 3em;
+				background-color: #a8d5d5;
+				padding: 20px;
+				margin: 0;
+			}
+
+			/* Header 2 */
+			h2 {
+				font-size: 1.8em;
+			}
+
+			/* Header 3 */
+			h3 {
+				font-size: 1.2em;
+			}
+
+			/* Paragraph 2 - Special styling with ID */
+			#paragraph2 {
+				width: 50%;
+				margin: 20px;
+				padding: 20px;
+				border: 3px solid #008000;
+				line-height: 2;
+				background-color: #ffffff;
+			}
+
+			/* Paragraphs with class "blue" - 4th and 5th paragraphs */
+			.blue {
+				color: #ffffff;
+				background-color: #0000cc;
+				padding: 10px;
+			}
+
+			/* Links in general */
+			a {
+				color: #0000ff;
+				text-decoration: underline;
+			}
+
+			/* Links inside list items (ordered list) */
+			ol li a {
+				color: #0000ff;
+			}
+
+			/* Link to w3schools - different color using attribute selector */
+			a[href="http://www.w3schools.com"] {
+				color: #ff0000;
+			}
+
+			/* Ordered List - Two digit formatting */
+			ol {
+				list-style-type: decimal-leading-zero;
+			}
+
+			/* Table Styling */
+			table {
+				border-collapse: collapse;
+				width: 50%;
+				margin: 20px 0;
+			}
+
+			/* Table headers */
+			th {
+				background-color: #c0c0c0;
+				color: #000000;
+				padding: 8px;
+				border: 1px solid #000000;
+				text-align: left;
+				font-weight: bold;
+			}
+
+			/* Table cells */
+			td {
+				background-color: #ffffff;
+				padding: 8px;
+				border: 1px solid #000000;
+			}
+		</style>
 	</head>
 	
 	<body>
