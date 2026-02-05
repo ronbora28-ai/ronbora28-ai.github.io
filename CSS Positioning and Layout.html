@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyBlog.com - Recent Journal Articles</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e0e0e0;
+        }
+
+        /* Header */
+        .header {
+            background-color: #ff0000;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #000080;
+            font-size: 1.5em;
+            margin: 0;
+        }
+
+        /* Navigation */
+        .nav {
+            background-color: #000000;
+            display: flex;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .nav a {
+            color: #ffffff;
+            background-color: #0000ff;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-right: 1px solid #000000;
+            display: inline-block;
+        }
+
+        .nav a:hover {
+            background-color: #0000cc;
+        }
+
+        /* Main Container */
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #ffffff;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background-color: #ffcc00;
+            width: 150px;
+            padding: 20px;
+            flex-shrink: 0;
+        }
+
+        .sidebar h2 {
+            font-size: 1em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #0000ff;
+            text-decoration: underline;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
+        .sidebar a:hover {
+            color: #800080;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .main-content h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 30px;
+            font-family: Georgia, serif;
+        }
+
+        /* Articles Grid */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .article {
+            border-bottom: 1px solid #cccccc;
+            padding-bottom: 20px;
+        }
+
+        .article h2 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .article p {
+            font-size: 0.85em;
+            line-height: 1.6;
+            text-align: justify;
+            color: #333333;
+        }
+
+        .article a {
+            color: #0000ff;
+            text-decoration: underline;
+            font-size: 0.85em;
+        }
+
+        .article a:hover {
+            color: #800080;
+        }
+
+        /* Thank You Box */
+        .thank-you {
+            background-color: #87ceeb;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #4682b4;
+            margin-top: 20px;
+        }
+
+        .thank-you h3 {
+            font-size: 1.3em;
+            color: #000000;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #ff0000;
+            padding: 15px;
+            text-align: center;
+            color: #000080;
+            font-weight: bold;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .nav {
+                flex-direction: column;
+            }
+
+            .nav a {
+                border-right: none;
+                border-bottom: 1px solid #000000;
+            }
+
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>MyBlog.com</h1>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav">
+        <a href="#recent">Recent Articles</a>
+        <a href="#services">Services</a>
+        <a href="#mission">Mission</a>
+        <a href="#about">About Us</a>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h2>Jump to an Article</h2>
+            <a href="#article1">Article 1</a>
+            <a href="#article2">Article 2</a>
+            <a href="#article3">Article 3</a>
+            <a href="#article4">Article 4</a>
+            <a href="#article5">Article 5</a>
+            <a href="#article6">Article 6</a>
+            <a href="#article7">Article 7</a>
+            <a href="#article8">Article 8</a>
+            <a href="#article9">Article 9</a>
+            <a href="#article10">Article 10</a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <h1>Recent Journal Articles</h1>
+
+            <div class="articles-grid">
+                <!-- Article 1 -->
+                <article class="article" id="article1">
+                    <h2>Article 1</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eius, magna vitae, feugiat ut tellus nec, nisl. Ut sit amet risus et ipsum maximus iaculis. Nulla dictum ut metus at auctor. Integer viverra, ligula eget erat viverra, turpis odor facilisis ligula, vel posuere nisl lectus laoreet libero impis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vitae mi a lacus lobortis euismod. Suspendisse et nisi accumsan, congue mauris et, mattis rhoncus, purus tortor sodales lorem, mauris augue pellentesque magna, in augue augue imperdiet orci.</p>
+                    <a href="#article1">Read more...</a>
+                </article>
+
+                <!-- Article 2 -->
+                <article class="article" id="article2">
+                    <h2>Article 2</h2>
+                    <p>Sed sed neque eget augue venenatis rutrum vitae quis arcu sed ut vehicula dui, eget posuere. Praesent porta eu nisl a malesuada. Nunc cursus facilisis ligula, in porttitor nisl pellentesque eleifend. Pellentesque consectetur vehicula ex, vel non lacinia mattis lobortis. In Cras dui elit erat, dignissim nec arce Nam.</p>
+                    <a href="#article2">Read more...</a>
+                </article>
+
+                <!-- Article 3 -->
+                <article class="article" id="article3">
+                    <h2>Article 3</h2>
+                    <p>Vivamus luctus ante venenatis, sed placerat et vehic ut ex. Nulla facilisi. Curabitur vestibulum mattis sed lacinia nec gravida neque aliquet ultrices. Nunc et dignissim amet aliquam mattis vitae. Cras at suscipit vel. Pellentesque vestibulum et mi quis tortor congue ultricies. Sed in libero nec. Nam viverra purus nec purus tortor vitae elit quam gravida pellentesque. Sed eget consequat nisi, eleifend vel sapien nisl. Duis posuere nisl alibi, fringilla aliquet mollis lectus aliquam.</p>
+                    <a href="#article3">Read more...</a>
+                </article>
+
+                <!-- Article 4 -->
+                <article class="article" id="article4">
+                    <h2>Article 4</h2>
+                    <p>Proin mi ipsum dignissim et diam nec, vestibulum ullamcorper elit. Proin quis ullamcorper nisl, ac placerat. Mauris eu magna et blanquet. Sed scelerisque, massa eu aliquam facilisis, libero ante amet consectetur et. Etiam dui nunc, elementum ante bibendum, cras nibh eleifend tempus. Praesent sit diam massa. Suspendisse commodo scelerisque mauris, ut scelerisque vivamus volutpat elit. Vivamus elementum phasellus tempor consectetur nibh, dapibus nec ex ac.</p>
+                    <a href="#article4">Read more...</a>
+                </article>
+
+                <!-- Article 5 -->
+                <article class="article" id="article5">
+                    <h2>Article 5</h2>
+                    <p>Sed suscipit venenatis felis, at accumsan ornare vitae. Cras facilisis iaculis eros, at varius nisi blanquet. Morbi nec augue at magna vulputate mollis. Nam sed porta sed velit viverra turpis elit in metus netus aliquam tortor augmentum scelerisque mattis sed laoreet ut metus ipsum lorem at fringilla ipsum. Morbi sapien leo, pulvinar sed tincidunt elementum leo mauris posuere, Nunc id mauris dignissim, ultrices ex ut, vestibulum turpis.</p>
+                    <a href="#article5">Read more...</a>
+                </article>
+
+                <!-- Article 6 -->
+                <article class="article" id="article6">
+                    <h2>Article 6</h2>
+                    <p>Aliquam erat vitae accumsan, et dictum magna varius dignissim et auctor vehicula vulputate. Lorem ipsum mattis ultricies et. Cras dui arcu, dapibus mauris ante augue volutpat. Integer euismod, lectus vitae ipsum vel. Sed porta iaculis bibendum eget mollis est ultrices sed. Suspendisse tellus dignissim ultricies vehicula. Sed in nisi sed mauris ligula viverra. Cras fertur leo et sagittis nec convallis.</p>
+                    <a href="#article6">Read more...</a>
+                </article>
+
+                <!-- Article 7 -->
+                <article class="article" id="article7">
+                    <h2>Article 7</h2>
+                    <p>Mauris, tempus, finolis augend, placerat ultrices. Fusce mattis arcu vehicula accumsan. Nulla nibh eget varius ornare. Sed consectetur est in lorem venenatis, sollicitudin at lacus sed mattis elementum mollis ipsum viverra luctus scelerisque. Nunc et metus augue sollicitudin mi, porttitor sodales.</p>
+                    <a href="#article7">Read more...</a>
+                </article>
+            </div>
+
+            <!-- Thank You Box -->
+            <div class="thank-you">
+                <h3>Thank you for visiting!</h3>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        MyBlog.com
+    </div>
+
+    <!-- Bottom Navigation (for second view) -->
+    <div class="nav" style="margin-top: 20px;">
+        <a href="#recent">Recent Articles</a>
+        <a href="#services">Services</a>
+        <a href="#mission">Mission</a>
+        <a href="#about">About Us</a>
+    </div>
+
+    <!-- Second Section (visible when scrolling) -->
+    <div class="container" style="margin-top: 0;">
+        <aside class="sidebar">
+            <h2>Jump to an Article</h2>
+            <a href="#article1">Article 1</a>
+            <a href="#article2">Article 2</a>
+            <a href="#article3">Article 3</a>
+            <a href="#article4">Article 4</a>
+            <a href="#article5">Article 5</a>
+            <a href="#article6">Article 6</a>
+            <a href="#article7">Article 7</a>
+            <a href="#article8">Article 8</a>
+            <a href="#article9">Article 9</a>
+            <a href="#article10">Article 10</a>
+        </aside>
+
+        <main class="main-content">
+            <h1>Recent Journal Articles</h1>
+
+            <div class="articles-grid">
+                <article class="article">
+                    <h2>Article 1</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eius, magna vitae, feugiat ut tellus nec, nisl. Ut sit amet risus et ipsum maximus iaculis. Nulla dictum ut metus at auctor. Integer viverra, ligula eget erat viverra, turpis odor facilisis ligula, vel posuere nisl lectus laoreet massa turpis libero impis.</p>
+                    <a href="#">Read more...</a>
+                </article>
+
+                <article class="article">
+                    <h2>Article 2</h2>
+                    <p>Sed sed neque eget augue venenatis rutrum vitae quis arcu sed ut vehicula dui, eget libero. Praesent porta eu nisl a malesuada. Nunc cursus facilisis ligula, in porttitor nisl pellentesque eleifend. Pellentesque consectetur vehicula ex, vel Cras dui arcu, dapibus mauris ante augue volutpat. Integer euismod, lectus vitae ipsum vel.</p>
+                    <a href="#">Read more...</a>
+                </article>
+
+                <article class="article">
+                    <h2>Article 3</h2>
+                    <p>Vivamus luctus ante venenatis, sed placerat et vehic at et eris. Nulla facilisi. Curabitur vestibulum mattis sed lacinia aliquam. Fusce dictum lorem ipsum eu mattis congue, vel bibendum urna eu gravida sed sagittis ultricies. Duis a et lacinia. Donec dictum lacinia placerat. Vestibulum scelerisque mauris in sem dui.</p>
+                    <a href="#">Read more...</a>
+                </article>
+
+                <article class="article">
+                    <h2>Article 4</h2>
+                    <p>Proin mi ipsum dignissim et diam nec, vestibulum ullamcorper elit. Proin quis ullamcorper nisl placerat. Mauris massa viverra, tempor at suscipit eleifend viverra, mauris nisl varius ullamcorper. Nulla volutpat erat mollis viverra luctus. Praesent mauris arcu commodo a pellentesque consectetur nibh.</p>
+                </article>
+            </div>
+
+            <div class="thank-you">
+                <h3>Thank you for visiting!</h3>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
