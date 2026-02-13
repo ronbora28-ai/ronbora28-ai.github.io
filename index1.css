@@ -1,0 +1,334 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --text-color: #333;
+    --light-bg: #ecf0f1;
+    --white: #ffffff;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: var(--text-color);
+    background-color: var(--light-bg);
+}
+
+/* Header Styles - Mobile First */
+header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: var(--white);
+    padding: 1.5rem 1rem;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+nav li {
+    text-align: center;
+}
+
+nav a {
+    color: var(--white);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    display: block;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    font-weight: 500;
+}
+
+nav a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Main Content - Mobile First */
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+section {
+    background-color: var(--white);
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.3s ease;
+}
+
+section:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+section h2 {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid var(--secondary-color);
+}
+
+section h3 {
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    margin-top: 1rem;
+}
+
+section h3:first-of-type {
+    margin-top: 0;
+}
+
+article {
+    margin-bottom: 1.5rem;
+}
+
+article:last-child {
+    margin-bottom: 0;
+}
+
+article h3 a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+article h3 a:hover {
+    color: var(--accent-color);
+}
+
+/* Contact Information */
+section p a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+section p a:hover {
+    color: var(--accent-color);
+}
+
+/* Lists */
+ul {
+    list-style-position: inside;
+    margin-left: 1rem;
+}
+
+li {
+    margin-bottom: 0.5rem;
+    line-height: 1.8;
+}
+
+/* Time elements */
+time {
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+/* Skills Section - Mobile */
+.skills-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+section article ul li {
+    background-color: var(--light-bg);
+    padding: 0.5rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+    list-style: none;
+    border-left: 3px solid var(--secondary-color);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+section article ul li:hover {
+    transform: translateX(5px);
+    border-color: var(--accent-color);
+}
+
+/* Footer */
+footer {
+    background-color: var(--primary-color);
+    color: var(--white);
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 2rem;
+}
+
+/* Professional Objective */
+section p {
+    line-height: 1.8;
+    margin-bottom: 0.5rem;
+}
+
+/* Education and Work Experience styling */
+article p strong {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Responsive Design - Tablet (768px and up) */
+@media screen and (min-width: 768px) {
+    header h1 {
+        font-size: 2.5rem;
+    }
+
+    nav ul {
+        flex-direction: row;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    nav li {
+        text-align: left;
+    }
+
+    main {
+        padding: 0 2rem;
+    }
+
+    section {
+        padding: 2rem;
+    }
+
+    .skills-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Responsive Design - Desktop (1920px) */
+@media screen and (min-width: 1200px) {
+    header {
+        padding: 2rem 3rem;
+    }
+
+    header h1 {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+    }
+
+    nav ul {
+        gap: 2rem;
+    }
+
+    nav a {
+        font-size: 1.1rem;
+        padding: 0.75rem 1.5rem;
+    }
+
+    main {
+        padding: 0;
+        margin: 3rem auto;
+    }
+
+    section {
+        padding: 2.5rem;
+    }
+
+    section h2 {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    section h3 {
+        font-size: 1.4rem;
+    }
+
+    /* Two-column layout for larger sections */
+    .skills-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+    }
+
+    /* Projects in two columns */
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+
+    .projects-grid article {
+        margin-bottom: 0;
+    }
+
+    /* Work experience with better spacing */
+    article ul {
+        margin-left: 2rem;
+    }
+
+    article ul li {
+        margin-bottom: 0.75rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    body {
+        background-color: white;
+    }
+
+    header {
+        position: static;
+        box-shadow: none;
+    }
+
+    section {
+        box-shadow: none;
+        page-break-inside: avoid;
+    }
+
+    nav {
+        display: none;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+section {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Accessibility improvements */
+a:focus,
+button:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
