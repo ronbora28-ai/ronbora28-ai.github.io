@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyBlog.com</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        header {
+            background-color: #d4a745;
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 48px;
+            color: #000;
+        }
+
+        nav {
+            background-color: #000;
+            display: flex;
+            justify-content: space-around;
+            padding: 0;
+        }
+
+        nav button {
+            flex: 1;
+            padding: 20px;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        nav button:nth-child(1),
+        nav button:nth-child(3) {
+            background-color: #0000ff;
+            color: white;
+        }
+
+        nav button:nth-child(2),
+        nav button:nth-child(4) {
+            background-color: #0000ff;
+            color: white;
+        }
+
+        nav button:hover {
+            opacity: 0.8;
+        }
+
+        .controls {
+            text-align: center;
+            padding: 30px;
+            background-color: #f0f0f0;
+        }
+
+        .controls button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            background-color: white;
+            border: 2px solid #000;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .controls button:hover {
+            background-color: #e0e0e0;
+        }
+
+        .filter-section {
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .filter-section h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .filter-options {
+            display: none;
+            margin-top: 15px;
+        }
+
+        .filter-options.active {
+            display: block;
+        }
+
+        .filter-options label {
+            margin: 0 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .filter-options input[type="checkbox"] {
+            margin-right: 5px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+
+        .recent-articles-header {
+            text-align: center;
+            padding: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #f0f0f0;
+        }
+
+        .articles-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .article {
+            background-color: white;
+            border: 2px solid #ccc;
+            padding: 20px;
+            position: relative;
+            min-height: 200px;
+        }
+
+        .article h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .article p {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .article .read-more {
+            color: #0000ff;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .article .read-more:hover {
+            text-decoration: underline;
+        }
+
+        .article-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 15px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 3px;
+        }
+
+        .article-tag.opinion {
+            background-color: #ff0000;
+        }
+
+        .article-tag.recipe {
+            background-color: #00ced1;
+        }
+
+        .article-tag.update {
+            background-color: #20b2aa;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #000;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn-submit {
+            background-color: #0000ff;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background-color: #0000cc;
+        }
+
+        .btn-cancel {
+            background-color: #ccc;
+            color: #000;
+        }
+
+        .btn-cancel:hover {
+            background-color: #aaa;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        footer {
+            background-color: #000;
+            color: white;
+            padding: 60px 40px;
+            margin-top: 40px;
+        }
+
+        .contact-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .contact-title {
+            font-size: 42px;
+            font-weight: normal;
+            margin-bottom: 20px;
+        }
+
+        .contact-info {
+            font-size: 24px;
+            line-height: 1.8;
+        }
+
+        .contact-label {
+            font-style: italic;
+            display: inline-block;
+            width: 150px;
+        }
+
+        .contact-value {
+            font-style: italic;
+        }
+
+        .contact-email {
+            color: #4169e1;
+            text-decoration: none;
+        }
+
+        .contact-email:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>MyBlog.com</h1>
+    </header>
+
+    <nav>
+        <button>Recent Articles</button>
+        <button>Services</button>
+        <button>Mission</button>
+        <button>About Us</button>
+    </nav>
+
+    <div class="controls">
+        <button id="filterBtn">Filter Articles</button>
+        <button id="addArticleBtn">Add New Article</button>
+    </div>
+
+    <div class="filter-section">
+        <div id="filterOptions" class="filter-options">
+            <h3>Filter by Article Type</h3>
+            <label>
+                <input type="checkbox" value="opinion" checked> Opinion
+            </label>
+            <label>
+                <input type="checkbox" value="recipe" checked> Recipe
+            </label>
+            <label>
+                <input type="checkbox" value="update" checked> Update
+            </label>
+        </div>
+    </div>
+
+    <div class="recent-articles-header">Recent Journal Articles</div>
+
+    <div class="articles-container" id="articlesContainer">
+        <!-- Article 1 -->
+        <div class="article" data-type="opinion">
+            <span class="article-tag opinion">Opinion</span>
+            <h2>Article 1</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eros magna, efficitur a facilisis id, venenatis in elit. Nulla dictum vel lectus. Phasellus fermentum mauris eu nisi. In hac habitasse platea dictumst. Sed id magna fringilla, consectetur adipiscing elit. Sed molestie vehicula quam, non accumsan orci pulvinar ac. Quisque placerat, lorem sed massa rhoncus, mauris tortor sodales tortor, sed viverra turpis orci in metus. Fusce ullamcorper euismod diam bibendum auctor.</p>
+            <a href="#" class="read-more">Read more...</a>
+        </div>
+
+        <!-- Article 2 -->
+        <div class="article" data-type="opinion">
+            <span class="article-tag opinion">Opinion</span>
+            <h2>Article 2</h2>
+            <p>Sed erat erat, maximus ut ullamcorper vitae, mattis vel ante. Donec tempus a libero at consectetur. Integer quis erat sit amet sem fringilla tincidunt. Nullam venenatis arcu quis porttitor fringilla. Donec porta magna ut vehicula ultricies. Proin sollicitudin gravida aliquet. Nulla sit eros urna, dapibus non ante duis, tristique egestas ac. Fusce ornare, neque in interdum condimentum, justo magna accumsan nunc, vitae!</p>
+            <a href="#" class="read-more">Read more...</a>
+        </div>
+
+        <!-- Article 3 -->
+        <div class="article" data-type="recipe">
+            <span class="article-tag recipe">Recipe</span>
+            <h2>Article 3</h2>
+            <p>Vivamus lacus ante, venenatis sed placerat id, pretium a est. Nulla facilisi. Curabitur vestibulum malesuada lectus, nec gravida nibh blandit sed. Duis convallis leo sed arcu. In hac habitasse platea dictumst. Sed id magna fringilla, consectetur adipiscing elit libero. Sed accumsan blandit ex vitae tempor. Nunc vel ligula lacus. Pellentesque ut amet justo nec quam gravida pellentesque.</p>
+            <a href="#" class="read-more">Read more...</a>
+        </div>
+
+        <!-- Article 4 -->
+        <div class="article" data-type="update">
+            <span class="article-tag update">Update</span>
+            <h2>Article 4</h2>
+            <p>Proin mi ipsum, egestas in diam nec, vulputate sollicitudin est. Proin quis ullamcorper lorem. Quisque fringilla non magna ac tincidunt. Sed scelerisque gravida ut aliquam faucibus. Nisi eros volutpat urna, ut rutrum eu erat eu eros. Pellentesque habitant ac turpis egestas dignissim pellentesque. Nulla in aliquam non. Fusce porttitor, massa non commodo ullamcorper, lacus metus convallis eros.</p>
+            <a href="#" class="read-more">Read more...</a>
+        </div>
+
+        <!-- Article 5 -->
+        <div class="article" data-type="update">
+            <span class="article-tag update">Update</span>
+            <h2>Article 5</h2>
+            <p>Sed suscipit vestibulum felis at aliquet. Pellentesque tincidunt justo non elit consequator consectetur. Etiam malesuada massa et felis ullamcorper tincidunt. Nam in ultis lectus odio, quis interdum, nibusul fringilla est. Duis non nequie vel bibendum mauris bibendum dignissim. Aenean accumsan sit amet ante non, in ullamcorper. In viverra placerat, arcu vel suscipit purus, tempor porttitor eros odio vel ante.</p>
+            <a href="#" class="read-more">Read more...</a>
+        </div>
+
+        <!-- Article 6 -->
+        <div class="article" data-type="recipe">
+            <span class="article-tag recipe">Recipe</span>
+            <h2>Article 6</h2>
+            <p>Phasellus nunc sapien, dignissim in magna id, egestas condimentum erat. Fusce ac consectetur velit, ac iaculis nisi. Pellentesque vulputate mi non arcu sodales, id suscipit ante pulvinar. Curabitur ut arcu in massa facilisis aliquam ac nec nunc. Sed molestie bibendum ante, vel fermentum mauris bibendum dignissim. Aenean quis magna ipsum. Nunc eget lectus libero, in congue ante. Quisque ornare, neque in interdum quis.</p>
+            <a href="#" class="read-more">Read more...</a>
+        </div>
+
+        <!-- Article 7 -->
+        <div class="article" data-type="recipe">
+            <span class="article-tag recipe">Recipe</span>
+            <h2>Article 7</h2>
+            <p>Mauris ac augue ligula euismod a mauris commodo vehicula. Praesent suscipit faucibus posuere. Etiam convallis tellus quis eleifend pulvinar. Nullam pellentesque arcu lectus, sed pretium mi lorem nec dui. Fusce bibendum, vehicula dictum finibus volutpat fermentum. Duis massa erat, consectetur a varius sollicitudin, pulvinar quis risus. Proin vitae euisla odio, et molestie dolor.</p>
+            <a href="#" class="read-more">Read more...</a>
+        </div>
+
+        <!-- Article 8 -->
+        <div class="article" data-type="update">
+            <span class="article-tag update">Update</span>
+            <h2>Article 8</h2>
+            <p>Integer quis ligula sentenar, viverra etiam et, malesuada urna. Praesent porttitor, eros ut pellentesque imperdiet, mattis arcu eleifend felis, est bibendum sapien ligula duis. Sed vivamus tincidunt metus purus. Phasellus elementum augue eget tellus vehicula auctor. Vivamus vitae ut tellus pellentesque. Fusce vulputate gravida velit, et ullamcorper elit efficitur ac. Nullam placerat quis sodales.</p>
+            <a href="#" class="read-more">Read more...</a>
+        </div>
+
+        <!-- Article 9 -->
+        <div class="article" data-type="opinion">
+            <span class="article-tag opinion">Opinion</span>
+            <h2>Article 9</h2>
+            <p>Sed ac augue mauris turpis condimentum, vulputate. Donec tincidunt, turpis eleifend viverra vehicula, sed tempus gravida purus et eros amet turpis. Mauris ultricies odio quis tellus, cursus non as viveneatis, cursus suscipit ante. Curabitur placerat, tortor eu commodo turpis. Orci verius natoque penatibus et magnis dis parturient mentes, nascetur etna. Donec venenatis elit vitae posuere congue.</p>
+            <a href="#" class="read-more">Read more...</a>
+        </div>
+
+        <!-- Article 10 -->
+        <div class="article" data-type="opinion">
+            <span class="article-tag opinion">Opinion</span>
+            <h2>Article 10</h2>
+            <p>Sed erat elit, maximus ut ullamcorper vitae, mattis vel ante. Donec tempus a libero at consectetur. Integer quis erat sit amet sem fringilla tincidunt. Nullam venenatis arcu quis porttitor fringilla. Donec porta magna ut vehicula ultricies. Proin sollicitudin gravida aliquet. Nulla sit eros urna dapibus non ante duis. Fusce bibendum, vehicula in tempor ac, tempor in est. Cras sagittis, sapien a vestibulum elementum, magna magna commodo ante.</p>
+            <a href="#" class="read-more">Read more...</a>
+        </div>
+    </div>
+
+    <!-- Add Article Modal -->
+    <div id="addArticleModal" class="modal">
+        <div class="modal-content">
+            <h2>Add New Article</h2>
+            <form id="articleForm">
+                <div class="form-group">
+                    <label for="articleTitle">Article Title:</label>
+                    <input type="text" id="articleTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="articleType">Article Type:</label>
+                    <select id="articleType" required>
+                        <option value="opinion">Opinion</option>
+                        <option value="recipe">Recipe</option>
+                        <option value="update">Update</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="articleContent">Article Content:</label>
+                    <textarea id="articleContent" required></textarea>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn-submit">Add Article</button>
+                    <button type="button" class="btn-cancel" id="cancelBtn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Get elements
+        const filterBtn = document.getElementById('filterBtn');
+        const filterOptions = document.getElementById('filterOptions');
+        const addArticleBtn = document.getElementById('addArticleBtn');
+        const addArticleModal = document.getElementById('addArticleModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const articleForm = document.getElementById('articleForm');
+        const articlesContainer = document.getElementById('articlesContainer');
+        const checkboxes = document.querySelectorAll('.filter-options input[type="checkbox"]');
+
+        // Toggle filter options
+        filterBtn.addEventListener('click', () => {
+            filterOptions.classList.toggle('active');
+        });
+
+        // Show add article modal
+        addArticleBtn.addEventListener('click', () => {
+            addArticleModal.classList.add('active');
+        });
+
+        // Close modal
+        cancelBtn.addEventListener('click', () => {
+            addArticleModal.classList.remove('active');
+            articleForm.reset();
+        });
+
+        // Close modal when clicking outside
+        addArticleModal.addEventListener('click', (e) => {
+            if (e.target === addArticleModal) {
+                addArticleModal.classList.remove('active');
+                articleForm.reset();
+            }
+        });
+
+        // Filter articles
+        function filterArticles() {
+            const checkedTypes = Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
+            const articles = document.querySelectorAll('.article');
+            articles.forEach(article => {
+                const articleType = article.getAttribute('data-type');
+                if (checkedTypes.includes(articleType)) {
+                    article.classList.remove('hidden');
+                } else {
+                    article.classList.add('hidden');
+                }
+            });
+        }
+
+        // Add event listeners to checkboxes
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', filterArticles);
+        });
+
+        // Add new article
+        articleForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const title = document.getElementById('articleTitle').value;
+            const type = document.getElementById('articleType').value;
+            const content = document.getElementById('articleContent').value;
+
+            // Create new article element
+            const article = document.createElement('div');
+            article.className = 'article';
+            article.setAttribute('data-type', type);
+
+            // Determine tag class and text
+            let tagClass = type;
+            let tagText = type.charAt(0).toUpperCase() + type.slice(1);
+
+            article.innerHTML = `
+                <span class="article-tag ${tagClass}">${tagText}</span>
+                <h2>${title}</h2>
+                <p>${content}</p>
+                <a href="#" class="read-more">Read more...</a>
+            `;
+
+            // Add to container
+            articlesContainer.appendChild(article);
+
+            // Check if this type should be visible based on current filters
+            const checkedTypes = Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+            
+            if (!checkedTypes.includes(type)) {
+                article.classList.add('hidden');
+            }
+
+            // Close modal and reset form
+            addArticleModal.classList.remove('active');
+            articleForm.reset();
+        });
+    </script>
+
+    <footer>
+        <div class="contact-container">
+            <div class="contact-title">Contact Us!</div>
+            <div class="contact-info">
+                <div><span class="contact-label">Phone:</span> <span class="contact-value">(555) 123-1234</span></div>
+                <div><span class="contact-label">Email:</span> <a href="/cdn-cgi/l/email-protection#c8aba7a6bca9abbc88a5b18ca7a5a9a1a6e6aba7a5" class="contact-email contact-value"><span class="__cf_email__" data-cfemail="d7b4b8b9a3b6b4a397baae93b8bab6beb9f9b4b8ba">[email&#160;protected]</span></a></div>
+                <div><span class="contact-label">Address:</span> <span class="contact-value">111 Fictional Place</span></div>
+                <div><span class="contact-label">Li
