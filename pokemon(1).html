@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pokémon Team Builder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --red:#e3350d; --yellow:#f8d030; --blue:#4488ff; --dark:#1a1a2e;
+      --card-bg:#16213e; --panel:#0f3460; --text:#eaf4fb; --muted:#9ab4cc;
+      --border:#f8d030; --green:#48d597;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'VT323',monospace;background:var(--dark);color:var(--text);min-height:100vh;padding:24px 16px 48px;
+      background-image:radial-gradient(ellipse at 20% 20%,rgba(68,136,255,.08) 0%,transparent 60%),
+                       radial-gradient(ellipse at 80% 80%,rgba(227,53,13,.08) 0%,transparent 60%)}
+    header{text-align:center;margin-bottom:32px}
+    header h1{font-family:'Press Start 2P',monospace;font-size:clamp(13px,3vw,20px);color:var(--yellow);
+      text-shadow:3px 3px 0 var(--red),6px 6px 0 rgba(0,0,0,.5);letter-spacing:2px;line-height:1.8}
+    header p{color:var(--muted);font-size:20px;margin-top:8px}
+    .layout{display:grid;grid-template-columns:340px 1fr;gap:24px;max-width:1100px;margin:0 auto}
+    @media(max-width:720px){.layout{grid-template-columns:1fr}}
+    .panel{background:var(--card-bg);border:2px solid var(--border);border-radius:12px;padding:20px;
+      box-shadow:0 0 20px rgba(248,208,48,.12),4px 4px 0 rgba(0,0,0,.5)}
+    .panel-title{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--yellow);text-transform:uppercase;
+      letter-spacing:1px;margin-bottom:16px;border-bottom:1px solid var(--panel);padding-bottom:10px}
+    .search-row{display:flex;gap:8px;margin-bottom:16px}
+    input[type=text]{flex:1;background:var(--panel);border:2px solid var(--muted);border-radius:6px;color:var(--text);
+      font-family:'VT323',monospace;font-size:22px;padding:6px 12px;outline:none;transition:border-color .2s}
+    input[type=text]:focus{border-color:var(--yellow)}
+    input[type=text]::placeholder{color:var(--muted);opacity:.6}
+    button{font-family:'Press Start 2P',monospace;font-size:9px;cursor:pointer;border:none;border-radius:6px;
+      padding:8px 14px;transition:transform .1s}
+    button:active{transform:translateY(2px)}
+    .btn-find{background:var(--yellow);color:var(--dark);box-shadow:0 3px 0 #b8960a}
+    .btn-find:hover{background:#ffe566}
+    .btn-find:disabled{opacity:.6;cursor:not-allowed}
+    .btn-add{background:var(--red);color:#fff;box-shadow:0 3px 0 #8b2007;width:100%;margin-top:14px;padding:12px;font-size:10px}
+    .btn-add:hover{background:#ff4422}
+    .btn-add:disabled{background:#555;box-shadow:none;cursor:not-allowed;color:#999}
+    .poke-display{text-align:center;min-height:160px;display:flex;flex-direction:column;align-items:center;
+      justify-content:center;gap:8px;background:var(--panel);border-radius:8px;padding:12px;margin-bottom:14px}
+    .poke-display img{image-rendering:pixelated;width:120px;height:120px;object-fit:contain}
+    .poke-name{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--yellow);text-transform:uppercase}
+    .poke-id{font-size:16px;color:var(--muted)}
+    .placeholder-art{font-size:60px;opacity:.15;user-select:none}
+    .placeholder-msg{color:var(--muted);font-size:18px}
+    audio{width:100%;margin-bottom:14px;border-radius:4px;accent-color:var(--yellow)}
+    .moves-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px}
+    .move-label{font-size:14px;color:var(--muted);margin-bottom:2px}
+    select{width:100%;background:var(--panel);border:2px solid var(--muted);border-radius:6px;color:var(--text);
+      font-family:'VT323',monospace;font-size:18px;padding:5px 8px;outline:none;cursor:pointer;transition:border-color .2s}
+    select:focus{border-color:var(--yellow)}
+    select:disabled{opacity:.4;cursor:not-allowed}
+    .error-msg{background:rgba(227,53,13,.2);border:1px solid var(--red);border-radius:6px;color:#ff8066;
+      font-size:18px;padding:8px 12px;margin-bottom:10px;display:none}
+    .team-panel{align-self:start}
+    .team-empty{text-align:center;color:var(--muted);font-size:20px;padding:30px 0;opacity:.6}
+    .team-list{display:flex;flex-direction:column;gap:10px}
+    .team-card{background:var(--panel);border:1px solid rgba(248,208,48,.3);border-radius:8px;padding:12px;
+      display:flex;align-items:flex-start;gap:14px;animation:slideIn .3s ease}
+    @keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+    .team-card img{image-rendering:pixelated;width:56px;height:56px;object-fit:contain;flex-shrink:0}
+    .team-card-info{flex:1;min-width:0}
+    .team-card-name{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--yellow);text-transform:uppercase;margin-bottom:6px}
+    .team-moves{display:flex;flex-wrap:wrap;gap:4px}
+    .move-chip{background:rgba(68,136,255,.2);border:1px solid var(--blue);border-radius:4px;padding:1px 7px;font-size:14px;color:#aaccff;white-space:nowrap}
+    .team-count{font-size:16px;color:var(--muted);margin-top:10px;text-align:right}
+    .team-count span{color:var(--green);font-family:'Press Start 2P',monospace;font-size:12px}
+    .type-badges{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:4px}
+    .type-badge{padding:2px 8px;border-radius:20px;text-transform:uppercase;font-family:'Press Start 2P',monospace;font-size:7px}
+    .t-fire{background:#f08030;color:#fff}.t-water{background:#6890f0;color:#fff}
+    .t-grass{background:#78c850;color:#fff}.t-electric{background:#f8d030;color:#000}
+    .t-ice{background:#98d8d8;color:#333}.t-fighting{background:#c03028;color:#fff}
+    .t-poison{background:#a040a0;color:#fff}.t-ground{background:#e0c068;color:#333}
+    .t-flying{background:#a890f0;color:#fff}.t-psychic{background:#f85888;color:#fff}
+    .t-bug{background:#a8b820;color:#fff}.t-rock{background:#b8a038;color:#fff}
+    .t-ghost{background:#705898;color:#fff}.t-dragon{background:#7038f8;color:#fff}
+    .t-dark{background:#705848;color:#fff}.t-steel{background:#b8b8d0;color:#333}
+    .t-fairy{background:#ee99ac;color:#fff}.t-normal{background:#a8a878;color:#fff}
+  </style>
+</head>
+<body>
+<header>
+  <h1>⚡ Pokémon Team Builder ⚡</h1>
+  <p>Build your ultimate team of 6!</p>
+</header>
+<div class="layout">
+  <div>
+    <div class="panel">
+      <div class="panel-title">Find a Pokémon</div>
+      <div class="search-row">
+        <input type="text" id="pokeInput" placeholder="Name or ID (e.g. pikachu, 25)..."/>
+        <button class="btn-find" id="findBtn" onclick="fetchPokemon()">Find</button>
+      </div>
+      <div class="error-msg" id="errorMsg"></div>
+      <div class="poke-display" id="pokeDisplay">
+        <div class="placeholder-art">◈</div>
+        <div class="placeholder-msg">Enter a Pokémon name or ID</div>
+      </div>
+      <audio id="pokeAudio" controls style="display:none"></audio>
+      <div class="moves-grid">
+        <div><div class="move-label">Move 1</div><select id="move1" disabled><option>—</option></select></div>
+        <div><div class="move-label">Move 2</div><select id="move2" disabled><option>—</option></select></div>
+        <div><div class="move-label">Move 3</div><select id="move3" disabled><option>—</option></select></div>
+        <div><div class="move-label">Move 4</div><select id="move4" disabled><option>—</option></select></div>
+      </div>
+      <button class="btn-add" id="addBtn" disabled onclick="addToTeam()">＋ Add to Team</button>
+    </div>
+  </div>
+  <div class="panel team-panel">
+    <div class="panel-title">Your Team</div>
+    <div id="teamList"><div class="team-empty">◈ No Pokémon added yet</div></div>
+    <div class="team-count" id="teamCount" style="display:none">Team: <span id="teamSize">0</span> / 6</div>
+  </div>
+</div>
+<script>
+  const cache={};
+  let currentPokemon=null, team=[];
+  const pokeInput=document.getElementById('pokeInput'),
+        pokeDisplay=document.getElementById('pokeDisplay'),
+        pokeAudio=document.getElementById('pokeAudio'),
+        errorMsg=document.getElementById('errorMsg'),
+        findBtn=document.getElementById('findBtn'),
+        addBtn=document.getElementById('addBtn'),
+        teamList=document.getElementById('teamList'),
+        teamCount=document.getElementById('teamCount'),
+        teamSize=document.getElementById('teamSize'),
+        selects=[1,2,3,4].map(i=>document.getElementById('move'+i));
+
+  pokeInput.addEventListener('keydown',e=>{if(e.key==='Enter')fetchPokemon()});
+
+  async function fetchPokemon(){
+    const q=pokeInput.value.trim().toLowerCase();
+    if(!q)return;
+    showError(''); setLoading(true);
+    try{
+      let data;
+      if(cache[q]){data=cache[q];}
+      else{
+        const res=await fetch(`https://pokeapi.co/api/v2/pokemon/${q}`);
+        if(!res.ok)throw new Error(`"${q}" not found. Try a name like pikachu or a number 1–151.`);
+        data=await res.json();
+        cache[q]=data;
+      }
+      displayPokemon(data);
+    }catch(err){
+      showError(err.message||'Something went wrong.');
+      resetDisplay();
+    }finally{setLoading(false);}
+  }
+
+  function displayPokemon(data){
+    currentPokemon=data;
+    const imgUrl=data.sprites?.front_default||data.sprites?.other?.['official-artwork']?.front_default||'';
+    const types=data.types.map(t=>t.type.name);
+    const typeBadges=types.map(t=>`<span class="type-badge t-${t}">${t}</span>`).join('');
+    pokeDisplay.innerHTML=`
+      ${imgUrl?`<img src="${imgUrl}" alt="${data.name}">`:'<div class="placeholder-art">?</div>'}
+      <div class="poke-name">${data.name}</div>
+      <div class="poke-id">#${String(data.id).padStart(3,'0')}</div>
+      <div class="type-badges">${typeBadges}</div>`;
+    const cryUrl=data.cries?.latest||data.cries?.legacy||null;
+    if(cryUrl){pokeAudio.src=cryUrl;pokeAudio.style.display='block';}
+    else{pokeAudio.style.display='none';}
+    const moves=data.moves.map(m=>m.move.name);
+    selects.forEach((sel,i)=>{
+      sel.disabled=false;
+      sel.innerHTML=moves.map(m=>`<option value="${m}">${m}</option>`).join('');
+      if(moves[i])sel.value=moves[i];
+    });
+    addBtn.disabled=team.length>=6;
+  }
+
+  function addToTeam(){
+    if(!currentPokemon||team.length>=6)return;
+    const chosenMoves=selects.map(s=>s.value).filter(v=>v&&v!=='—');
+    team.push({name:currentPokemon.name,id:currentPokemon.id,
+               img:currentPokemon.sprites?.front_default||'',moves:chosenMoves});
+    renderTeam();
+    if(team.length>=6)addBtn.disabled=true;
+  }
+
+  function renderTeam(){
+    if(team.length===0){
+      teamList.innerHTML='<div class="team-empty">◈ No Pokémon added yet</div>';
+      teamCount.style.display='none'; return;
+    }
+    teamCount.style.display='block';
+    teamSize.textContent=team.length;
+    teamList.innerHTML='<div class="team-list">'+team.map(p=>`
+      <div class="team-card">
+        ${p.img?`<img src="${p.img}" alt="${p.name}">`:''}
+        <div class="team-card-info">
+          <div class="team-card-name">#${String(p.id).padStart(3,'0')} ${p.name}</div>
+          <div class="team-moves">${p.moves.map(m=>`<span class="move-chip">${m}</span>`).join('')}</div>
+        </div>
+      </div>`).join('')+'</div>';
+  }
+
+  function showError(msg){errorMsg.textContent=msg;errorMsg.style.display=msg?'block':'none';}
+  function setLoading(on){findBtn.textContent=on?'...':'Find';findBtn.disabled=on;}
+  function resetDisplay(){
+    currentPokemon=null;
+    pokeDisplay.innerHTML='<div class="placeholder-art">◈</div><div class="placeholder-msg">Pokémon not found</div>';
+    pokeAudio.style.display='none';
+    selects.forEach(s=>{s.disabled=true;s.innerHTML='<option>—</option>';});
+    addBtn.disabled=true;
+  }
+</script>
+</body>
+</html>
