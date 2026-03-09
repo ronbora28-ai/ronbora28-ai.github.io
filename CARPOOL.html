@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RideShare — Carpooling</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0d0f14;
+      --surface: #161920;
+      --card: #1e2230;
+      --border: #2a2f3d;
+      --accent: #00e5a0;
+      --accent2: #0077ff;
+      --warn: #ff5c5c;
+      --text: #f0f2f7;
+      --muted: #7a8099;
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 28px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+    }
+    .logo span { color: var(--text); }
+    .nav-tabs { display: flex; gap: 4px; }
+    .nav-tab {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: transparent;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    .nav-tab.active { background: var(--card); color: var(--text); }
+    .nav-tab:hover:not(.active) { color: var(--text); }
+
+    /* MAIN LAYOUT */
+    .app {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      flex: 1;
+      height: calc(100vh - 57px);
+    }
+    @media (max-width: 768px) {
+      .app { grid-template-columns: 1fr; height: auto; }
+      #map { height: 300px; }
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-track { background: transparent; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* PANELS */
+    .panel { display: none; flex-direction: column; flex: 1; }
+    .panel.active { display: flex; }
+
+    .panel-header {
+      padding: 24px 24px 0;
+    }
+    .panel-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+    .panel-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+    /* FORM */
+    .form-body { padding: 0 24px 24px; display: flex; flex-direction: column; gap: 14px; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+    input, select, textarea {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    input:focus, select:focus { border-color: var(--accent); }
+    input::placeholder { color: var(--muted); }
+    select option { background: var(--card); }
+
+    .input-icon-wrap { position: relative; }
+    .input-icon-wrap input { padding-left: 40px; }
+    .input-icon {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .btn {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      padding: 14px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.3px;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #0d0f14;
+    }
+    .btn-primary:hover { background: #00ffb3; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,229,160,0.3); }
+    .btn-secondary {
+      background: var(--accent2);
+      color: #fff;
+    }
+    .btn-secondary:hover { background: #2288ff; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,119,255,0.3); }
+
+    /* DIVIDER */
+    .divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+    /* RIDE CARDS */
+    .rides-list { padding: 0 24px 24px; display: flex; flex-direction: column; gap: 12px; }
+    .rides-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 0 24px;
+      margin-bottom: -4px;
+    }
+
+    .ride-card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      animation: fadeUp 0.3s ease both;
+    }
+    .ride-card:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,229,160,0.1); }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+    .ride-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+    .ride-route { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; }
+    .ride-route .arrow { color: var(--accent); margin: 0 6px; }
+    .ride-price { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; color: var(--accent); }
+
+    .ride-meta { display: flex; gap: 10px; flex-wrap: wrap; }
+    .meta-chip {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--muted);
+      background: var(--surface);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .ride-driver { display: flex; align-items: center; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+    .driver-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #0d0f14;
+      flex-shrink: 0;
+    }
+    .driver-name { font-size: 13px; font-weight: 500; }
+    .driver-rating { font-size: 12px; color: var(--muted); }
+    .seats-badge {
+      margin-left: auto;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: rgba(0,229,160,0.12);
+      color: var(--accent);
+    }
+    .seats-badge.low { background: rgba(255,92,92,0.12); color: var(--warn); }
+
+    /* MAP */
+    #map { flex: 1; }
+    .map-placeholder {
+      flex: 1;
+      background: var(--card);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--muted);
+    }
+    .map-placeholder .map-icon { font-size: 48px; opacity: 0.3; }
+    .map-placeholder p { font-size: 14px; text-align: center; max-width: 260px; line-height: 1.6; }
+    .api-notice {
+      background: rgba(0,119,255,0.1);
+      border: 1px solid rgba(0,119,255,0.3);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 12px;
+      color: #7ab4ff;
+      text-align: center;
+      margin: 0 24px 16px;
+    }
+    .api-key-input-wrap {
+      padding: 0 24px 16px;
+    }
+    .api-key-input-wrap input {
+      font-size: 13px;
+      font-family: monospace;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--card);
+      border: 1.5px solid var(--accent);
+      border-radius: 10px;
+      padding: 14px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      z-index: 999;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast .t-icon { color: var(--accent); margin-right: 8px; }
+
+    /* EMPTY */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 40px 24px; gap: 8px;
+      color: var(--muted); text-align: center;
+    }
+    .empty-state .e-icon { font-size: 36px; opacity: 0.3; margin-bottom: 4px; }
+    .empty-state p { font-size: 14px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">ride<span>share</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('find')">🔍 Find a Ride</button>
+    <button class="nav-tab" onclick="switchTab('post')">🚗 Post a Ride</button>
+    <button class="nav-tab" onclick="switchTab('my')">👤 My Rides</button>
+  </div>
+</nav>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- FIND PANEL -->
+    <div class="panel active" id="panel-find">
+      <div class="panel-header">
+        <div class="panel-title">Find a Ride</div>
+        <div class="panel-sub">Search available carpools near you</div>
+      </div>
+      <div class="form-body">
+        <div class="field">
+          <label>Pickup Location</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">📍</span>
+            <input type="text" id="find-from" placeholder="Enter pickup address" oninput="geocodeInput('find-from', 'origin')"/>
+          </div>
+        </div>
+        <div class="field">
+          <label>Destination</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">🏁</span>
+            <input type="text" id="find-to" placeholder="Enter destination" oninput="geocodeInput('find-to', 'dest')"/>
+          </div>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label>Date</label>
+            <input type="date" id="find-date"/>
+          </div>
+          <div class="field">
+            <label>Seats Needed</label>
+            <select id="find-seats">
+              <option>1</option><option>2</option><option>3</option><option>4</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="searchRides()">Search Rides →</button>
+      </div>
+
+      <div class="divider"></div>
+      <div class="rides-label" id="rides-label" style="display:none">Available Rides</div>
+      <div class="rides-list" id="rides-list"></div>
+    </div>
+
+    <!-- POST PANEL -->
+    <div class="panel" id="panel-post">
+      <div class="panel-header">
+        <div class="panel-title">Post a Ride</div>
+        <div class="panel-sub">Offer seats and split the cost</div>
+      </div>
+      <div class="form-body">
+        <div class="field">
+          <label>Your Name</label>
+          <input type="text" id="post-name" placeholder="Full name"/>
+        </div>
+        <div class="field">
+          <label>From</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">📍</span>
+            <input type="text" id="post-from" placeholder="Starting location" oninput="geocodeInput('post-from', 'origin')"/>
+          </div>
+        </div>
+        <div class="field">
+          <label>To</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon">🏁</span>
+            <input type="text" id="post-to" placeholder="Destination" oninput="geocodeInput('post-to', 'dest')"/>
+          </div>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label>Date</label>
+            <input type="date" id="post-date"/>
+          </div>
+          <div class="field">
+            <label>Time</label>
+            <input type="time" id="post-time"/>
+          </div>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label>Seats Available</label>
+            <select id="post-seats">
+              <option>1</option><option>2</option><option>3</option><option selected>4</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Price per Seat ($)</label>
+            <input type="number" id="post-price" placeholder="0.00" min="0" step="0.50"/>
+          </div>
+        </div>
+        <div class="field">
+          <label>Notes (optional)</label>
+          <input type="text" id="post-notes" placeholder="e.g. No smoking, pet friendly..."/>
+        </div>
+        <button class="btn btn-secondary" onclick="postRide()">Post My Ride 🚀</button>
+      </div>
+    </div>
+
+    <!-- MY RIDES PANEL -->
+    <div class="panel" id="panel-my">
+      <div class="panel-header">
+        <div class="panel-title">My Rides</div>
+        <div class="panel-sub">Rides you've posted or booked</div>
+      </div>
+      <div class="rides-list" id="my-rides-list">
+        <div class="empty-state">
+          <div class="e-icon">🚗</div>
+          <p>No rides yet. Post a ride or book one to see it here.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- API KEY INPUT -->
+    <div style="margin-top:auto">
+      <div class="api-notice">🗺️ Enter your Google Maps API key below to enable the map</div>
+      <div class="api-key-input-wrap">
+        <input type="text" id="api-key-input" placeholder="YOUR_GOOGLE_MAPS_API_KEY" oninput="updateApiKey(this.value)"/>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MAP -->
+  <div id="map">
+    <div class="map-placeholder" id="map-placeholder">
+      <div class="map-icon">🗺️</div>
+      <p>Enter your Google Maps API key to enable live maps, routing, and geocoding.</p>
+      <p style="font-size:12px;opacity:0.6">Or search for rides to see route previews</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── State ─────────────────────────────────────────────────────────────────
+  let apiKey = '';
+  let map, directionsService, directionsRenderer, geocoder;
+  let mapsLoaded = false;
+  let postedRides = [];
+  let myRides = [];
+
+  // Seed with demo rides
+  const demoRides = [
+    { id:1, from:'Downtown Miami', to:'Miami Airport', date:'2026-03-10', time:'08:00', seats:3, price:12, name:'Carlos M.', rating:4.8, notes:'AC, music ok', color:'#00e5a0' },
+    { id:2, from:'Brickell', to:'Wynwood Arts District', date:'2026-03-10', time:'10:30', seats:2, price:5, name:'Sofia R.', rating:4.9, notes:'Pet friendly', color:'#0077ff' },
+    { id:3, from:'Coral Gables', to:'South Beach', date:'2026-03-11', time:'14:00', seats:1, price:8, name:'James T.', rating:4.6, notes:'No smoking', color:'#ff9500' },
+    { id:4, from:'Little Havana', to:'Aventura Mall', date:'2026-03-12', time:'11:00', seats:4, price:15, name:'Maria L.', rating:5.0, notes:'', color:'#ff5c5c' },
+  ];
+
+  // ── Tab switching ──────────────────────────────────────────────────────────
+  function switchTab(tab) {
+    document.querySelectorAll('.nav-tab').forEach((t,i) => {
+      t.classList.toggle('active', ['find','post','my'][i] === tab);
+    });
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + tab).classList.add('active');
+  }
+
+  // ── Google Maps loader ────────────────────────────────────────────────────
+  function updateApiKey(key) {
+    apiKey = key.trim();
+    if (apiKey.length > 20 && !mapsLoaded) loadGoogleMaps();
+  }
+
+  function loadGoogleMaps() {
+    const script = document.createElement('script');
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap`;
+    script.async = true;
+    script.onerror = () => showToast('❌ Invalid API key or Maps failed to load');
+    document.head.appendChild(script);
+    mapsLoaded = true;
+  }
+
+  window.initMap = function() {
+    document.getElementById('map-placeholder').style.display = 'none';
+    const mapDiv = document.createElement('div');
+    mapDiv.style.cssText = 'width:100%;height:100%';
+    document.getElementById('map').appendChild(mapDiv);
+
+    map = new google.maps.Map(mapDiv, {
+      center: { lat: 25.7617, lng: -80.1918 },
+      zoom: 11,
+      styles: darkMapStyle,
+      disableDefaultUI: false,
+      zoomControl: true,
+    });
+
+    directionsService = new google.maps.DirectionsService();
+    directionsRenderer = new google.maps.DirectionsRenderer({
+      map,
+      polylineOptions: { strokeColor: '#00e5a0', strokeWeight: 4 }
+    });
+    geocoder = new google.maps.Geocoder();
+
+    // Enable autocomplete on all address inputs
+    ['find-from','find-to','post-from','post-to'].forEach(id => {
+      new google.maps.places.Autocomplete(document.getElementById(id));
+    });
+
+    showToast('✅ Google Maps loaded!');
+  };
+
+  function showRoute(from, to) {
+    if (!directionsService) return;
+    directionsService.route({
+      origin: from,
+      destination: to,
+      travelMode: google.maps.TravelMode.DRIVING
+    }, (result, status) => {
+      if (status === 'OK') directionsRenderer.setDirections(result);
+    });
+  }
+
+  function geocodeInput(inputId, type) {
+    // Autocomplete handles this when Maps is loaded
+  }
+
+  // ── Search rides ──────────────────────────────────────────────────────────
+  function searchRides() {
+    const from = document.getElementById('find-from').value.trim();
+    const to   = document.getElementById('find-to').value.trim();
+
+    if (!from || !to) { showToast('⚠️ Please enter pickup and destination'); return; }
+
+    // Show route on map
+    showRoute(from, to);
+
+    // Combine demo + posted rides
+    const allRides = [...demoRides, ...postedRides];
+    const list = document.getElementById('rides-list');
+    const label = document.getElementById('rides-label');
+
+    if (allRides.length === 0) {
+      list.innerHTML = '<div class="empty-state"><div class="e-icon">🔍</div><p>No rides found. Try different locations.</p></div>';
+      label.style.display = 'none';
+      return;
+    }
+
+    label.style.display = 'block';
+    list.innerHTML = allRides.map((r, i) => rideCardHTML(r, i)).join('');
+    showToast(`✅ Found ${allRides.length} rides`);
+  }
+
+  function rideCardHTML(r, i) {
+    const seats = parseInt(r.seats);
+    const isLow = seats <= 1;
+    const initials = r.name.split(' ').map(n=>n[0]).join('');
+    return `
+      <div class="ride-card" style="animation-delay:${i*0.06}s" onclick="selectRide(${JSON.stringify(r).replace(/"/g,'&quot;')})">
+        <div class="ride-card-top">
+          <div class="ride-route">
+            ${r.from} <span class="arrow">→</span> ${r.to}
+          </div>
+          <div class="ride-price">$${r.price}</div>
+        </div>
+        <div class="ride-meta">
+          <span class="meta-chip">📅 ${r.date}</span>
+          <span class="meta-chip">⏰ ${r.time}</span>
+          ${r.notes ? `<span class="meta-chip">💬 ${r.notes}</span>` : ''}
+        </div>
+        <div class="ride-driver">
+          <div class="driver-avatar" style="background:${r.color}">${initials}</div>
+          <div>
+            <div class="driver-name">${r.name}</div>
+            <div class="driver-rating">⭐ ${r.rating || '5.0'}</div>
+          </div>
+          <div class="seats-badge ${isLow?'low':''}">${seats} seat${seats!==1?'s':''} left</div>
+        </div>
+      </div>`;
+  }
+
+  function selectRide(ride) {
+    showRoute(ride.from, ride.to);
+    // Book the ride
+    if (!myRides.find(r => r.id === ride.id && r.type === 'booked')) {
+      myRides.push({ ...ride, type: 'booked' });
+      renderMyRides();
+    }
+    showToast(`🎉 Ride booked with ${ride.name}!`);
+  }
+
+  // ── Post ride ─────────────────────────────────────────────────────────────
+  function postRide() {
+    const name  = document.getElementById('post-name').value.trim();
+    const from  = document.getElementById('post-from').value.trim();
+    const to    = document.getElementById('post-to').value.trim();
+    const date  = document.getElementById('post-date').value;
+    const time  = document.getElementById('post-time').value;
+    const seats = document.getElementById('post-seats').value;
+    const price = document.getElementById('post-price').value;
+    const notes = document.getElementById('post-notes').value.trim();
+
+    if (!name || !from || !to || !date || !time) {
+      showToast('⚠️ Please fill in all required fields'); return;
+    }
+
+    const colors = ['#00e5a0','#0077ff','#ff9500','#ff5c5c','#a855f7','#ec4899'];
+    const newRide = {
+      id: Date.now(), from, to, date, time, seats, price: price||0,
+      name, rating: 5.0, notes,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      type: 'posted'
+    };
+
+    postedRides.push(newRide);
+    myRides.push(newRide);
+    renderMyRides();
+    showRoute(from, to);
+
+    // Clear form
+    ['post-name','post-from','post-to','post-date','post-time','post-price','post-notes'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+
+    showToast('🚗 Your ride has been posted!');
+    switchTab('my');
+  }
+
+  // ── My Rides ──────────────────────────────────────────────────────────────
+  function renderMyRides() {
+    const list = document.getElementById('my-rides-list');
+    if (myRides.length === 0) {
+      list.innerHTML = '<div class="empty-state"><div class="e-icon">🚗</div><p>No rides yet.</p></div>';
+      return;
+    }
+    list.innerHTML = myRides.map((r,i) => `
+      <div class="ride-card" style="animation-delay:${i*0.06}s">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:${r.type==='posted'?'rgba(0,119,255,0.15)':'rgba(0,229,160,0.15)'};color:${r.type==='posted'?'#7ab4ff':'#00e5a0'}">
+            ${r.type === 'posted' ? '🚗 POSTED' : '🎫 BOOKED'}
+          </span>
+          <span style="font-family:'Syne',sans-serif;font-weight:800;color:var(--accent)">$${r.price}</span>
+        </div>
+        <div class="ride-route" style="margin-bottom:8px">${r.from} <span class="arrow">→</span> ${r.to}</div>
+        <div class="ride-meta">
+          <span class="meta-chip">📅 ${r.date}</span>
+          <span class="meta-chip">⏰ ${r.time}</span>
+          <span class="meta-chip">💺 ${r.seats} seats</span>
+        </div>
+      </div>`).join('');
+  }
+
+  // ── Toast ─────────────────────────────────────────────────────────────────
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.innerHTML = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ── Set today's date as default ───────────────────────────────────────────
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('find-date').value = today;
+  document.getElementById('post-date').value = today;
+
+  // ── Dark map style ────────────────────────────────────────────────────────
+  const darkMapStyle = [
+    {elementType:'geometry',stylers:[{color:'#1a1a2e'}]},
+    {elementType:'labels.text.stroke',stylers:[{color:'#1a1a2e'}]},
+    {elementType:'labels.text.fill',stylers:[{color:'#7a8099'}]},
+    {featureType:'road',elementType:'geometry',stylers:[{color:'#2a2f3d'}]},
+    {featureType:'road',elementType:'geometry.stroke',stylers:[{color:'#1e2230'}]},
+    {featureType:'road.highway',elementType:'geometry',stylers:[{color:'#0f3460'}]},
+    {featureType:'water',elementType:'geometry',stylers:[{color:'#0d1117'}]},
+    {featureType:'poi',stylers:[{visibility:'off'}]},
+    {featureType:'transit',stylers:[{visibility:'off'}]},
+  ];
+</script>
+</body>
+</html>
